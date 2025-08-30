@@ -114,6 +114,15 @@ class QuantumCompressedAurora:
             self.vocab = {}
             self.transitions = {}
             self.embedding = np.random.randn(1000, 50) * 0.01
+            # Initial training data
+            initial_data = [
+                "def fizzbuzz(n): result = [] for i in range(1, n+1): if i % 15 == 0: result.append('FizzBuzz') elif i % 3 == 0: result.append('Fizz') elif i % 5 == 0: result.append('Buzz') else: result.append(str(i)) return result",
+                "def factorial(n): if n == 0: return 1 else: return n * factorial(n-1)",
+                "print('Hello, World!')",
+                "class Calculator: def __init__(self): self.value = 0 def add(self, x): self.value += x return self.value",
+            ]
+            for snippet in initial_data:
+                self.train_on_snippet(snippet)
 
         def quantum_train(self, snippet):
             """Parallel training simulation."""
