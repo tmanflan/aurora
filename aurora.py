@@ -10,7 +10,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
 import os
 import io
-import zlib  # For quantum-inspired compression
+import zlib
+from datasets import load_dataset  # For quantum-inspired compression
 
 class QuantumCompressedAurora:
     """
@@ -29,6 +30,19 @@ class QuantumCompressedAurora:
         self.is_running = True
         self.update_thread = threading.Thread(target=self.quantum_streaming_update_loop)
         self.update_thread.start()
+        # Load Hugging Face dataset
+        self.load_huggingface_dataset()
+
+    def load_huggingface_dataset(self):
+        """Load a subset of The Stack dataset for training."""
+        try:
+            dataset = load_dataset("bigcode/the-stack-smol", split="train[:200]", data_dir="data/python")  # Small subset for Python
+            for example in dataset:
+                code = example['content']
+                self.model.quantum_train(code)
+            print("Loaded 200 Python code snippets from The Stack (smol).")
+        except Exception as e:
+            print(f"Error loading Hugging Face dataset: {e}")
 
     def get_current_zip_path(self):
         if hasattr(sys, '_MEIPASS'):
@@ -122,7 +136,7 @@ class QuantumCompressedAurora:
                 "class Calculator: def __init__(self): self.value = 0 def add(self, x): self.value += x return self.value",
             ]
             for snippet in initial_data:
-                self.train_on_snippet(snippet)
+                self.quantum_train(snippet)
 
         def quantum_train(self, snippet):
             """Parallel training simulation."""
